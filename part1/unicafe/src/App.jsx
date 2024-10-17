@@ -6,14 +6,14 @@ const Header = ({ name }) => (
 )
 
 const Button = ({ handleClick, text }) => (
-  <button onClick={handleClick}>
+  <button onClick={handleClick} style={{marginRight: '1rem'}}>
     {text}
   </button>
 )
 
 const StatisticLine = ({ text, value }) => (
-  <tr>
-    <td style={{textAlign: 'left'}}>{text}</td>
+  <tr style={{textAlign: 'left'}}>
+    <td style={{paddingRight: '1rem'}}>{text}</td>
     <td>{value}</td>
   </tr>
 )
@@ -22,7 +22,7 @@ const Statistics = (props) => {
   const {good, neutral, bad} = props.feedback
 
   const all = good + neutral + bad
-  const positive = ((good - bad) / all).toFixed(2)
+  const positive = Math.round(((good - bad) / all) * 100) + ' %'
 
   const feedbacks = [
     {
