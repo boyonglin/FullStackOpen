@@ -6,14 +6,14 @@ const Header = ({ name }) => (
 )
 
 const Anecdote = ({ anecdote, vote }) => (
-  <div style={{display: 'flex', alignItems: 'center', flexDirection: 'column'}}>
-    <p style={{width: '50rem'}}>{anecdote}</p>
+  <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+    <p style={{ width: '50rem' }}>{anecdote}</p>
     <p>has {vote} votes</p>
   </div>
 )
 
 const Button = ({ handleClick, text }) => (
-  <button onClick={handleClick} style={{marginRight: '1rem'}}>
+  <button onClick={handleClick} style={{ marginRight: '1rem' }}>
     {text}
   </button>
 )

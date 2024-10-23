@@ -6,14 +6,14 @@ const Header = ({ name }) => (
 )
 
 const Button = ({ handleClick, text }) => (
-  <button onClick={handleClick} style={{marginRight: '1rem'}}>
+  <button onClick={handleClick} style={{ marginRight: '1rem' }}>
     {text}
   </button>
 )
 
 const StatisticLine = ({ text, value }) => (
-  <tr style={{textAlign: 'left'}}>
-    <td style={{paddingRight: '1rem'}}>{text}</td>
+  <tr style={{ textAlign: 'left' }}>
+    <td style={{ paddingRight: '1rem' }}>{text}</td>
     <td>{value}</td>
   </tr>
 )
