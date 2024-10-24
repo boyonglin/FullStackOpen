@@ -9,22 +9,24 @@ const Weather = ({ capital }) => {
     if (!capital) return;
 
     axios
-      .get(`http://api.openweathermap.org/data/2.5/weather?q=${capital}&appid=${api_key}`)
+      .get(`http://api.openweathermap.org/data/2.5/weather?q=${capital}&appid=${api_key}&units=metric`)
       .then(response => {
         setWeather(response.data)
       })
   }, [capital])
 
+  if (!weather) {
+    return null;
+  }
+
   return (
     <>
       <h2>Weather in {capital}</h2>
-      {weather === null ? <div></div> :
-        <div>
-          <p>Temperature: {weather.main.temp} Celsius</p>
-          <p>Wind: {weather.wind.speed} m/s</p>
-          <img src={`http://openweathermap.org/img/w/${weather.weather[0].icon}.png`} alt='weather icon' width='80px' />
-        </div>
-      }
+      <div>
+        <p>Temperature: {weather.main.temp} Celsius</p>
+        <img src={`http://openweathermap.org/img/w/${weather.weather[0].icon}.png`} alt='weather icon' width='80px' />
+        <p>Wind: {weather.wind.speed} m/s</p>
+      </div>
     </>
   )
 }

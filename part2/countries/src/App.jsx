@@ -51,8 +51,8 @@ function App() {
   const countriesToShow = filter === ''
     ? countries
     : countries.filter(country =>
-        country.name.common.toLowerCase().includes(filter.toLowerCase())
-      )
+      country.name.common.toLowerCase().includes(filter.toLowerCase())
+    )
 
   const showCountry = (event) => {
     const countryName = event.target.previousSibling.wholeText.trim();
