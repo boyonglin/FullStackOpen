@@ -11,6 +11,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filterName, setFilterName] = useState('')
+  const [Message, setMessage] = useState(null)
 
   useEffect(() => {
     phonebookService.getAll().then((initialPersons) => {
@@ -40,7 +41,7 @@ const App = () => {
             resetForm()
           })
           .catch(() => {
-            alert(`Error updating person: ${error.message}`)
+            handleMessage(`Information of '${newName}' has already been removed from server`)
           })
       }
     } else {
@@ -54,11 +55,19 @@ const App = () => {
         .then((returnedPerson) => {
           setPersons(persons.concat(returnedPerson))
           resetForm()
+          handleMessage(`Phonebook added person '${newName}'`)
         })
         .catch(() => {
-          alert(`Error adding person: ${error.message}`)
+          handleMessage(`Error adding person '${newName}'`)
         })
     }
+  }
+
+  const handleMessage = (message) => {
+    setMessage(message)
+    setTimeout(() => {
+      setMessage(null)
+    }, 5000)
   }
 
   const handleNewName = (event) => {
@@ -73,6 +82,31 @@ const App = () => {
     setFilterName(event.target.value)
   }
 
+  const Notification = ({ message }) => {
+    const notificationStyle = {
+      color: 'white',
+      background: '#1a1a1a',
+      border: '1px solid white',
+      fontSize: '18px',
+      borderRadius: '8px',
+      padding: '12px 20px',
+      marginBottom: '15px',
+      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+      lineHeight: '1.6',
+      fontWeight: 'bold'
+    }
+
+    if (message === null) {
+      return null
+    }
+
+    return (
+      <div>
+        <p style={notificationStyle}>{message}</p>
+      </div>
+    )
+  }
+
   const filterPersons =
     filterName.trim() === ''
       ? persons
@@ -82,6 +116,7 @@ const App = () => {
 
   return (
     <div>
+      <Notification message={Message} />
       <h2>Phonebook</h2>
       <Filter filterName={filterName} handleFilterName={handleFilterName} />
       <h2>Add a new</h2>
@@ -93,7 +128,7 @@ const App = () => {
         handleNewNumber={handleNewNumber}
       />
       <h2>Numbers</h2>
-      <Persons persons={filterPersons} setPersons={setPersons} />
+      <Persons persons={filterPersons} setPersons={setPersons} handleMessage={handleMessage} />
     </div>
   )
 }

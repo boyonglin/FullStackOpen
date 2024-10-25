@@ -1,12 +1,13 @@
 import React from 'react'
 import phonebookService from '../services/phonebook'
 
-const Persons = ({ persons, setPersons }) => {
+const Persons = ({ persons, setPersons, handleMessage }) => {
 
   const handleDelete = (id, name) => {
     if (window.confirm(`Delete ${name}?`)) {
       phonebookService.deletePerson(id).then(() => {
         setPersons(persons.filter(person => person.id !== id))
+        handleMessage(`Deleted '${name}'`)
       })
     }
   }
