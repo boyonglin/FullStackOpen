@@ -4,6 +4,8 @@ import './App.css'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
+import Notification from './components/Notification'
+
 import phonebookService from './services/phonebook'
 
 const App = () => {
@@ -18,11 +20,6 @@ const App = () => {
       setPersons(initialPersons)
     })
   }, [])
-
-  const resetForm = () => {
-    setNewName('')
-    setNewNumber('')
-  }
 
   const handleFormSubmit = (event) => {
     event.preventDefault()
@@ -63,6 +60,11 @@ const App = () => {
     }
   }
 
+  const resetForm = () => {
+    setNewName('')
+    setNewNumber('')
+  }
+
   const handleMessage = (message) => {
     setMessage(message)
     setTimeout(() => {
@@ -80,31 +82,6 @@ const App = () => {
 
   const handleFilterName = (event) => {
     setFilterName(event.target.value)
-  }
-
-  const Notification = ({ message }) => {
-    const notificationStyle = {
-      color: 'white',
-      background: '#1a1a1a',
-      border: '1px solid white',
-      fontSize: '18px',
-      borderRadius: '8px',
-      padding: '12px 20px',
-      marginBottom: '15px',
-      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-      lineHeight: '1.6',
-      fontWeight: 'bold'
-    }
-
-    if (message === null) {
-      return null
-    }
-
-    return (
-      <div>
-        <p style={notificationStyle}>{message}</p>
-      </div>
-    )
   }
 
   const filterPersons =
