@@ -1,61 +1,84 @@
-import { useState, useEffect } from "react";
-import Filter from "./components/Filter";
-import PersonForm from "./components/PersonForm";
-import Persons from "./components/Persons";
-import "./App.css";
-import axios from 'axios'
+import { useState, useEffect } from 'react'
+import './App.css'
+
+import Filter from './components/Filter'
+import PersonForm from './components/PersonForm'
+import Persons from './components/Persons'
+import phonebookService from './services/phonebook'
 
 const App = () => {
-  const [persons, setPersons] = useState([]);
-  const [newName, setNewName] = useState("");
-  const [newNumber, setNewNumber] = useState("");
-  const [filterName, setFilterName] = useState("");
+  const [persons, setPersons] = useState([])
+  const [newName, setNewName] = useState('')
+  const [newNumber, setNewNumber] = useState('')
+  const [filterName, setFilterName] = useState('')
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        setPersons(response.data)
-      })
+    phonebookService.getAll().then((initialPersons) => {
+      setPersons(initialPersons)
+    })
   }, [])
 
-  const addPhonebook = (event) => {
-    event.preventDefault();
+  const resetForm = () => {
+    setNewName('')
+    setNewNumber('')
+  }
 
-    if (persons.some((person) => person.name === newName)) {
-      alert(`${newName} is already added to phonebook`);
-      return;
+  const handleFormSubmit = (event) => {
+    event.preventDefault()
+    const existingPerson = persons.find((person) => person.name === newName)
+
+    if (existingPerson) {
+      const confirmReplace = window.confirm(`'${newName}' is already added to phonebook, replace the old number with a new one?`)
+
+      if (confirmReplace) {
+        const changedPerson = { ...existingPerson, number: newNumber }
+        const existingPersonId = existingPerson.id
+
+        phonebookService.update(existingPersonId, changedPerson)
+          .then((returnedPerson) => {
+            setPersons(persons.map((person) => person.id !== existingPersonId ? person : returnedPerson))
+            resetForm()
+          })
+          .catch(() => {
+            alert(`Error updating person: ${error.message}`)
+          })
+      }
+    } else {
+      const phonebookObject = {
+        id: (persons.length + 1).toString(),
+        name: newName,
+        number: newNumber
+      }
+
+      phonebookService.create(phonebookObject)
+        .then((returnedPerson) => {
+          setPersons(persons.concat(returnedPerson))
+          resetForm()
+        })
+        .catch(() => {
+          alert(`Error adding person: ${error.message}`)
+        })
     }
-
-    const phonebookObject = {
-      name: newName,
-      number: newNumber,
-      id: persons.length + 1,
-    };
-
-    setPersons(persons.concat(phonebookObject));
-    setNewName("");
-    setNewNumber("");
-  };
+  }
 
   const handleNewName = (event) => {
-    setNewName(event.target.value);
-  };
+    setNewName(event.target.value)
+  }
 
   const handleNewNumber = (event) => {
-    setNewNumber(event.target.value);
-  };
+    setNewNumber(event.target.value)
+  }
 
   const handleFilterName = (event) => {
-    setFilterName(event.target.value);
-  };
+    setFilterName(event.target.value)
+  }
 
   const filterPersons =
-    filterName.trim() === ""
+    filterName.trim() === ''
       ? persons
       : persons.filter((person) =>
-          person.name.toLowerCase().includes(filterName.toLowerCase())
-        );
+        person.name.toLowerCase().includes(filterName.toLowerCase())
+      )
 
   return (
     <div>
@@ -63,16 +86,16 @@ const App = () => {
       <Filter filterName={filterName} handleFilterName={handleFilterName} />
       <h2>Add a new</h2>
       <PersonForm
-        addPhonebook={addPhonebook}
+        handleFormSubmit={handleFormSubmit}
         newName={newName}
         handleNewName={handleNewName}
         newNumber={newNumber}
         handleNewNumber={handleNewNumber}
       />
       <h2>Numbers</h2>
-      <Persons persons={filterPersons} />
+      <Persons persons={filterPersons} setPersons={setPersons} />
     </div>
-  );
-};
+  )
+}
 
-export default App;
+export default App
