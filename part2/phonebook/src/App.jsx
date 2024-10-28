@@ -42,8 +42,16 @@ const App = () => {
           })
       }
     } else {
+
+      const generateId = () => {
+        const maxId = persons.length > 0
+          ? Math.max(...persons.map(person => person.id))
+          : 0
+        return maxId + 1
+      }
+
       const phonebookObject = {
-        id: (persons.length + 1).toString(),
+        id: generateId().toString(),
         name: newName,
         number: newNumber
       }
