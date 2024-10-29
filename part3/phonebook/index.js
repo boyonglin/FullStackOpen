@@ -1,8 +1,21 @@
 const express = require('express')
+const morgan = require('morgan')
+
 const app = express()
 
+// middleware
 app.use(express.json())
 
+morgan.token('body', (request, response) => {
+    return request.method === 'POST' && response.statusCode === 200
+    ? JSON.stringify(request.body)
+    : '';
+})
+
+// tiny (predefined format) + body (custom token)
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
+
+// hardcoded data
 let persons = [
     {
         "id": 1,
@@ -26,6 +39,7 @@ let persons = [
     }
 ]
 
+// REST API
 app.get('/', (request, response) => {
     response.send('<h1>This is FullStackOpen Phonebook</h1>')
 })
@@ -53,13 +67,6 @@ app.get('/api/persons/:id', (request, response) => {
     }
 })
 
-const generateId = () => {
-    const maxId = persons.length > 0
-        ? Math.max(...persons.map(person => person.id))
-        : 0
-    return maxId + 1
-}
-
 app.post('/api/persons', (request, response) => {
     const body = request.body
 
@@ -86,6 +93,13 @@ app.post('/api/persons', (request, response) => {
     response.json(person)
 })
 
+const generateId = () => {
+    const maxId = persons.length > 0
+        ? Math.max(...persons.map(person => person.id))
+        : 0
+    return maxId + 1
+}
+
 app.delete('/api/persons/:id', (request, response) => {
     const id = Number(request.params.id)
     persons = persons.filter(person => person.id !== id)
@@ -93,6 +107,7 @@ app.delete('/api/persons/:id', (request, response) => {
     response.status(204).end()
 })
 
+// start server
 const PORT = 3001
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
